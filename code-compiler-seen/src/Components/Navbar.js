@@ -2,6 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 import '../Components/Navbar.css';
 import Axios from 'axios'
+import axios from 'axios';
 
 const Navbar = ({userLang, setUserLang, userTheme,
 				setUserTheme, fontSize, setFontSize, importCode, setUserCode}) => {
@@ -14,9 +15,23 @@ const Navbar = ({userLang, setUserLang, userTheme,
 	async function importCode(e){
 		e.preventDefault() ; 
 		const id = prompt("Enter Your code id") ;
+		if(id===null)
+		{
+			return;
+		}
 		const res = await Axios.get(`http://localhost:8000/code/${id}`) ; 
 		setUserCode(res.data) ; 
 		// console.log(res.data);
+	}
+
+	async function callOcr(e){
+		e.preventDefault() ; 
+		alert("Image is successfully uploaded for text reading") ;
+
+		axios.post("http://localhost:8000/ocr").then((res) => {
+			console.log(res.data.data);
+			setUserCode(res.data.data)
+		}).catch((err) => console.log(err))
 	}
 
 	const languages = [
@@ -64,8 +79,14 @@ const Navbar = ({userLang, setUserLang, userTheme,
 			</button>
 			</div>
 			<div className="shareit">
-			<button onClick={share} >
+			<button style={{marginRight:"2%"}} onClick={share} >
 				Share 
+			</button>
+			
+			</div>
+			<div className='uploadit'>
+			<button style={{marginLeft:"2%"}} onClick={callOcr} >
+					Upload 
 			</button>
 			</div>
 		</div>
